@@ -1,0 +1,7 @@
+{
+  "name": "multitools",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
