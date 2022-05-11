@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Geolocation } from 'src/app/utils/models/Geolocation/geolocation';
-import { Weather } from 'src/app/utils/models/weather/weather';
+import { finalize } from 'rxjs/operators'; 
+import { Meteo } from 'src/app/utils/models/Meteo'; 
 import { WeatherService } from 'src/app/utils/services/weather.service';
 
 @Component({
@@ -9,10 +9,10 @@ import { WeatherService } from 'src/app/utils/services/weather.service';
   styleUrls: ['./weather.page.scss'],
 })
 export class WeatherPage implements OnInit {
-
-  geoloc: Geolocation;
-  weather: Weather;
-  search = '';
+ 
+  city? : string;
+  meteo: Meteo;
+  isLoading: boolean = false;
 
   constructor(
     private weatherService: WeatherService
@@ -21,17 +21,11 @@ export class WeatherPage implements OnInit {
   ngOnInit() {
   }
 
-  searchCity() {
-    this.weatherService.getCityInformation(this.search).subscribe(
-      w => { 
-        this.weather = w; 
-        this.weatherService.getCountryInformation(this.weather.sys.country).subscribe(
-          g => { 
-            this.geoloc = g[0]; 
-          }
-        );
-      }
-    )
+  getWeather() {
+    this.isLoading = true;
+    this.weatherService.getCityInformation(this.city)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe( m => { this.meteo = m; })
   }
 
 }

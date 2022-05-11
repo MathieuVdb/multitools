@@ -1,30 +1,45 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="primary">
     <ion-title>Weather</ion-title>
   </ion-toolbar>
-  <ion-searchbar 
-      color="medium" 
-      type="text"
-      placeholder="Exemple : Lille, Paris ..."
-      enterkeyhint="search"
-      (ionChange)="searchCity()"
-      [(ngModel)]="search"
-      debounce="500">
-    </ion-searchbar>
+  <ion-toolbar class="secondary">
+    <ion-searchbar 
+        color="medium" 
+        type="text"
+        placeholder="Exemple : Lille, Paris ..."
+        inputmode="search"
+        enterkeyhint="search"
+        (ionChange)="getWeather()"
+        [(ngModel)]="city"
+        debounce="1000"
+        autocomplete="city">
+      </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" fullscreen>  
-    <ion-item *ngIf="weather && geoloc">
+<ion-content>  
+    <ion-item *ngIf="meteo; else noWeather">
       <ion-card>
         <ion-card-header>
-          <ion-card-subtitle>{{  weather.dt * 1000  | date: 'dd MMM yyyy, hh:mm' }}</ion-card-subtitle>
+          <ion-card-subtitle>{{  meteo.date | date: 'dd MMM YYYY' }}</ion-card-subtitle>
           <ion-card-title>
-            {{ weather.name }} {{geoloc.flag}}
+            {{ meteo.city }} {{ meteo.flag }} 
           </ion-card-title>
+          <ion-note>{{ meteo.country }} </ion-note>
         </ion-card-header>
         <ion-card-content>
-          <br/>{{ weather.main.temp | number:'1.0-0'}}°C
+          {{ meteo.temp | number:'1.0-0'}}°C
         </ion-card-content>
       </ion-card>
     </ion-item>
+
+    <ng-template #noWeather>
+      <ion-card class="ion-padding" *ngIf="!city">
+        <ion-text color="black">Veuillez entrer une ville.</ion-text>
+      </ion-card>
+      <ion-card class="ion-padding" *ngIf="city">
+        <ion-text *ngIf="isLoading" color="black">Chargement...</ion-text>
+        <ion-text *ngIf="!isLoading" color="danger">Nous n'avons pas trouvé d'information sur cette ville.</ion-text>
+      </ion-card>
+    </ng-template>
 </ion-content>
