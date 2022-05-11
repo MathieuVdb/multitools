@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Weather</ion-title>
+  </ion-toolbar>
+  <ion-searchbar 
+      color="medium" 
+      type="text"
+      placeholder="Exemple : Lille, Paris ..."
+      enterkeyhint="search"
+      (ionChange)="searchCity()"
+      [(ngModel)]="search"
+      debounce="500">
+    </ion-searchbar>
+</ion-header>
+
+<ion-content class="ion-padding" fullscreen>  
+    <ion-item *ngIf="weather && geoloc">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>{{  weather.dt * 1000  | date: 'dd MMM yyyy, hh:mm' }}</ion-card-subtitle>
+          <ion-card-title>
+            {{ weather.name }} {{geoloc.flag}}
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <br/>{{ weather.main.temp | number:'1.0-0'}}°C
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+</ion-content>
