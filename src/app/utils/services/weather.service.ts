@@ -6,6 +6,7 @@ import { ToastController, ToastOptions } from '@ionic/angular';
 import { MessagesService } from './messages.service'; 
 import { environment } from 'src/environments/environment';
 import { Meteo } from '../models/Meteo';
+import { Geolocation, Position } from '@capacitor/geolocation';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class WeatherService {
   urlApiWeather = environment.WEATHER_URL;
   urlKeyWeather = environment.WEATHER_KEY;
   urlApiCountry = environment.COUNTRY_URL;
-  tempMeteo: any;
+  units: string = "metric"
+  tempMeteo: any; 
 
   constructor(
     private http: HttpClient,
@@ -44,7 +46,7 @@ export class WeatherService {
       params: {
         q: city,
         appid: this.urlKeyWeather,
-        units: 'metric'
+        units: this.units
       }
     }).pipe(
       tap(apiWeather => this.tempMeteo = apiWeather),
@@ -70,6 +72,38 @@ export class WeatherService {
 
   getCountryInformation(code): Observable<Geolocation[]> { 
     return this.http.get<Geolocation[]>(this.urlApiCountry + code).pipe(
+      catchError(err => {
+        this.messageService.createAlert(`Oups, quelque chose s'est mal passé`);
+        console.log(err);
+        return of(undefined);
+      })
+    );
+  }
+
+  
+  async getLocation() {
+    try{
+      return await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true
+      });
+    }catch(e) {
+      this.messageService.createAlert(e.message);
+    } 
+  }
+ 
+  getCityInformationbyLatAndLong(position: Position): Observable<Meteo>  {
+    
+    return this.http.get<any>(`${this.urlApiWeather}`, {
+      params: {
+        lat: position.coords.latitude,
+        lon: position.coords.longitude,
+        units: this.units,
+        appid: this.urlKeyWeather
+      }
+    }).pipe(
+      tap(apiWeather => this.tempMeteo = apiWeather),
+      switchMap(apiWeather => this.http.get(`${this.urlApiCountry}/${apiWeather.sys.country}/`)),
+      map(apiCountry => this.weatherMapper(apiCountry[0])),
       catchError(err => {
         this.messageService.createAlert(`Oups, quelque chose s'est mal passé`);
         console.log(err);
