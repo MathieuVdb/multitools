@@ -44,7 +44,7 @@ export class AuthenticationService {
  
   async verifyToken(): Promise<boolean> {
     const t = await this.storage.get(this.key); 
-    this.isLogged$.next(!!t);
+    this.isLogged$.next(!!t); 
     return !!t;
   }
   

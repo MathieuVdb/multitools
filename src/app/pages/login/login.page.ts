@@ -33,14 +33,14 @@ export class LoginPage implements OnInit {
   authenticate() { 
     this.authenticationService.login(this.userForm.value).subscribe(() => {
       this.reset();
-      this.router.navigate(['weather']);
+      this.router.navigate(['/weather']);
     });
   }
   
   bioLogin() {
     this.authenticationService.loginBiometric().subscribe(() => {
       this.reset();
-      this.router.navigate(['weather']);
+      this.router.navigate(['/weather']);
     });
   }
 
