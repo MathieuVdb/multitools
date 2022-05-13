@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar color="success">
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="userForm" (ngSubmit)="authenticate()">
+    <ion-item lines="full">
+      <ion-label position="floating">Email</ion-label>
+      <ion-input formControlName="email" type="email" required></ion-input>
+    </ion-item>
+    <ion-note *ngIf="userForm.controls['email'].touched && userForm.controls['email'].invalid" color="danger">
+      <span *ngIf="userForm.controls['email'].hasError('required')">Veuillez entrer un email</span>
+      <span *ngIf="userForm.controls['email'].hasError('pattern')">Veuillez entrer un email correct</span>
+    </ion-note>
+    <ion-item lines="full">
+      <ion-label position="floating">Password</ion-label>
+      <ion-input formControlName="password" type="password" required></ion-input>
+    </ion-item> 
+    <ion-note color="medium" *ngIf="view === 'register'">Minimum 3 caractères</ion-note> 
+    <ion-note *ngIf="userForm.controls['password'].dirty && userForm.controls['password']" color="danger">
+      <span *ngIf="userForm.controls['password'].hasError('required')">Veuillez entrer un mot de passe</span>
+      <span *ngIf="userForm.controls['password'].hasError('minLenght')">Ce mot de passe est trop court</span>
+    </ion-note>
+    <p>
+      <ion-button expand="block" type="submit">Login</ion-button> 
+    </p>
+  </form> 
+  
+  <div *ngIf="isBiometricAvailable">
+    <ion-button expand="block" fill="outline" (click)="bioLogin()" color="secondary">
+      <ion-icon slot="start" name="finger-print-outline"></ion-icon>
+      Sign in with fingerprints
+    </ion-button>
+  </div>
+
+</ion-content>

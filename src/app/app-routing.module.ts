@@ -4,12 +4,16 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '', 
-    redirectTo: 'weather', 
+    redirectTo: 'login', 
     pathMatch: 'full'
   },
   {
     path: 'weather',
     loadChildren: () => import('./pages/weather/weather.module').then( m => m.WeatherPageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   }
 ];
 
